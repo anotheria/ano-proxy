@@ -15,6 +15,7 @@
 	<packaging>pom</packaging>
 
 	<modules>
+		<module>shared</module>
 		<module>client</module>
 		<module>server</module>
 	</modules>
@@ -26,7 +27,7 @@
 		<aspectj.version>1.8.7</aspectj.version>
 		<aspectj-maven-plugin.version>1.8</aspectj-maven-plugin.version>
 		<aspectj-maven-plugin.complianceLevel>1.7</aspectj-maven-plugin.complianceLevel>
-		<moskito-webui-version>${project.version}</moskito-webui-version>
+		<moskito-version>2.8.8</moskito-version>
 		<distributeme.version>2.3.0</distributeme.version>
 		<moskitoplugins-version>1.0.0-SNAPSHOT</moskitoplugins-version>
 	</properties>

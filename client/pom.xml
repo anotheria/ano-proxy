@@ -16,7 +16,12 @@
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
     </dependency>
-	<dependency>
+	  <dependency>
+		  <groupId>net.anotheria</groupId>
+		  <artifactId>anoproxy-shared</artifactId>
+		  <version>${project.version}</version>
+	  </dependency>
+	  <dependency>
 		<groupId>net.anotheria</groupId>
 		<artifactId>ano-util</artifactId>
         <exclusions>

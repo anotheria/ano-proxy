@@ -102,7 +102,11 @@
 		  <artifactId>httpclient</artifactId>
 		  <version>4.3.6</version>
 	  </dependency>
-
+	  <dependency>
+		  <groupId>de.erichseifert.vectorgraphics2d</groupId>
+		  <artifactId>VectorGraphics2D</artifactId>
+		  <version>0.9.3</version>
+	  </dependency>
 
   </dependencies>
 	<build>

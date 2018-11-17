@@ -182,8 +182,39 @@
         "intervalName": "5m"
       }
 
-    ]
-  },
+    ],
+    "@autoAccumulators": [
+      {
+        "namePattern": "$PRODUCERNAME.REQ.1m",
+        "producerNamePattern": "(.*)Resource",
+        "statName": "cumulated",
+        "valueName": "req",
+        "intervalName": "1m"
+      },
+      {
+        "namePattern": "$PRODUCERNAME.TIME.1m",
+        "producerNamePattern": "(.*)Resource",
+        "statName": "cumulated",
+        "valueName": "time",
+        "intervalName": "1m"
+      },
+      {
+        "namePattern": "$PRODUCERNAME.AVG.1m",
+        "producerNamePattern": "(.*)Resource",
+        "statName": "cumulated",
+        "valueName": "avg",
+        "intervalName": "1m"
+      },
+      {
+        "namePattern": "$PRODUCERNAME.ERR.1m",
+        "producerNamePattern": "(.*)Resource",
+        "statName": "cumulated",
+        "valueName": "err",
+        "intervalName": "1m"
+      }]
+
+
+      },
   "@thresholdsConfig": {
     "@thresholds": [
       {
@@ -437,6 +468,41 @@
           "SysLoad"
         ]
       },
+      {
+        "name": "Resource Board",
+        "@charts": [],
+        "@chartPatterns": [
+          {
+            "caption": "Resource Requests",
+            "accumulatorPatterns": [
+              "(.*)Resource.REQ.1m"
+            ]
+          },
+          {
+            "caption": "Resource Errors",
+            "accumulatorPatterns": [
+              "(.*)Resource.ERR.1m"
+            ]
+          },
+          {
+            "caption": "Resource TotalTime",
+            "accumulatorPatterns": [
+              "(.*)Resource.TIME.1m"
+            ]
+          },
+          {
+            "caption": "Resource Average Duration",
+            "accumulatorPatterns": [
+              "(.*)Resource.AVG.1m"
+            ]
+          }
+
+
+        ],
+        "@producerNamePatterns": ["(.*)Resource"]
+
+      },
+
       {
         "name": "Memory",
         "@charts": [

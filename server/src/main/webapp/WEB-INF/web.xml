@@ -5,6 +5,11 @@
 
     <display-name>PROXYSERVER</display-name>
 
+	<context-param>
+		<param-name>moskitoRmiPort</param-name>
+		<param-value>7997</param-value>
+	</context-param>
+	
 	<servlet>
 		<servlet-name>JerseyServletContainer</servlet-name>
 		<servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
@@ -35,7 +40,7 @@
 	    	<welcome-file>index.html</welcome-file>
   	</welcome-file-list>
 	
-	<listener>
+	<!--<listener>-->
 		<!-- <listener-class>net.anotheria.baldur.extapi.ContextInitializer</listener-class> -->
-	</listener>
+	<!--</listener>-->
 </web-app> 

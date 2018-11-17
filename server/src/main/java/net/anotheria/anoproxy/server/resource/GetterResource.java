@@ -4,6 +4,8 @@ import net.anotheria.anoproxy.server.httphelper.HttpHelper;
 import net.anotheria.anoproxy.server.httphelper.HttpHelperResponse;
 import net.anotheria.anoproxy.shared.ReplyObject;
 import net.anotheria.anoproxy.shared.RequestObject;
+import net.anotheria.moskito.aop.annotation.Monitor;
+import net.anotheria.util.NumberUtils;
 
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -15,6 +17,7 @@ import javax.ws.rs.Path;
  * @since 02.11.18 15:43
  */
 @Path("/getter")
+@Monitor
 public class GetterResource {
 
 	private static ProxyConfiguration configuration = new ProxyConfiguration();
@@ -22,7 +25,7 @@ public class GetterResource {
 	@POST
 	public ReplyObject get(RequestObject requestObject){
 
-		System.out.println("Get user request "+requestObject);
+		System.out.println(NumberUtils.makeISO8601TimestampString()+" get user request "+requestObject);
 
 
 		String url = requestObject.getUrl();

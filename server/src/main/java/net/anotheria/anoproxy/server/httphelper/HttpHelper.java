@@ -43,7 +43,7 @@ public class HttpHelper {
 		// Increase max total connection to 200
 		cm.setMaxTotal(200);
 		// Increase default max connection per route to 20
-		cm.setDefaultMaxPerRoute(20);
+		cm.setDefaultMaxPerRoute(100);
 
 		httpClient = new DefaultHttpClient(cm);
 

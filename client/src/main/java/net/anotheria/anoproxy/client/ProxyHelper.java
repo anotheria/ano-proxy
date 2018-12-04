@@ -27,6 +27,9 @@ public class ProxyHelper {
 		String proxyUrl = "http://"+serverConfig.getHost()+":"+serverConfig.getPort()+"/rest/getter";
 
 		Client client = JerseyClientUtil.getClientInstance();
+		client.setConnectTimeout(2000);
+		client.setReadTimeout(3000);
+
 		ClientResponse clientResponse = null;
 		try{
 			WebResource webResource = client.resource(proxyUrl);

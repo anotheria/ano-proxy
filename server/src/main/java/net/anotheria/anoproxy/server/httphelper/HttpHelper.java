@@ -4,20 +4,20 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.impl.client.AbstractHttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.PoolingClientConnectionManager;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
+import org.apache.http.config.ConnectionConfig;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This help class is a wrapper around apache http client lib.
@@ -27,38 +27,36 @@ import java.io.IOException;
  */
 public class HttpHelper {
 
+    /**
+     * {@link Logger} instance.
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(HttpHelper.class);
+
 	/**
 	 * HttpClient instance.
 	 */
-	private static AbstractHttpClient httpClient = null;
+	private static CloseableHttpClient httpClient = null;
 
 	static{
-		SchemeRegistry schemeRegistry = new SchemeRegistry();
-		schemeRegistry.register(
-				new Scheme("http", 80, PlainSocketFactory.getSocketFactory()));
-		schemeRegistry.register(
-				new Scheme("https", 443, SSLSocketFactory.getSocketFactory()));
+		PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager(4, TimeUnit.SECONDS);
+		ConnectionConfig connectionConfig = ConnectionConfig.custom().setCharset(Charset.forName("UTF-8")).build();
 
-		PoolingClientConnectionManager cm = new PoolingClientConnectionManager(schemeRegistry);
-		// Increase max total connection to 200
-		cm.setMaxTotal(200);
-		// Increase default max connection per route to 20
-		cm.setDefaultMaxPerRoute(100);
+		connectionManager.setDefaultConnectionConfig(connectionConfig);
+		connectionManager.setMaxTotal(200);
+		connectionManager.setDefaultMaxPerRoute(100);
 
-		httpClient = new DefaultHttpClient(cm);
-
-		HttpParams params = httpClient.getParams();
-		HttpConnectionParams.setConnectionTimeout(params, 10000);
-		HttpConnectionParams.setSoTimeout(params, 10000);
-
+		RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(2000).setSocketTimeout(3000).setConnectionRequestTimeout(4000).build();
+        httpClient = HttpClients.custom()
+				.setDefaultRequestConfig(requestConfig)
+				.setConnectionManager(connectionManager).build();
 	}
-	
+
 
 	/**
-	 * Executes a request using the given URL and credentials.
+	 * Executes a http GET request using the given URL and credentials.
 	 *
 	 * @param url  the http URL to connect to.
-	 * @param credentials credentials to use
+	 * @param userAgent user agent
 	 *
 	 * @return  the response to the request.
 	 * @throws IOException in case of a problem or the connection was aborted
@@ -116,6 +114,7 @@ public class HttpHelper {
 		}catch(IOException e){
 			ret.setSuccess(false);
 			ret.setErrorMessage(e.getMessage());
+            LOGGER.error("can't execute http request with method <{}> url <{}>, and userAgent <{}>", method, url, userAgent, e);
 		}
 
 		return ret;

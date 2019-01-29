@@ -38,7 +38,7 @@ public class HttpHelper {
 	private static CloseableHttpClient httpClient = null;
 
 	static{
-		PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager(4, TimeUnit.SECONDS);
+		PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager(5, TimeUnit.SECONDS);
 		ConnectionConfig connectionConfig = ConnectionConfig.custom().setCharset(Charset.forName("UTF-8")).build();
 
 		connectionManager.setDefaultConnectionConfig(connectionConfig);
@@ -47,8 +47,12 @@ public class HttpHelper {
 
 		RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(2000).setSocketTimeout(3000).setConnectionRequestTimeout(4000).build();
         httpClient = HttpClients.custom()
+				.setKeepAliveStrategy(new ProxyConnectionKeepAliveStrategy())
 				.setDefaultRequestConfig(requestConfig)
 				.setConnectionManager(connectionManager).build();
+
+        IdleConnectionMonitorThread connectionMonitor = new IdleConnectionMonitorThread(connectionManager);
+        connectionMonitor.start();
 	}
 
 

@@ -38,14 +38,14 @@ public class HttpHelper {
 	private static CloseableHttpClient httpClient = null;
 
 	static{
-		PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager(10, TimeUnit.SECONDS);
+		PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager(11, TimeUnit.SECONDS);
 		ConnectionConfig connectionConfig = ConnectionConfig.custom().setCharset(Charset.forName("UTF-8")).build();
 
 		connectionManager.setDefaultConnectionConfig(connectionConfig);
 		connectionManager.setMaxTotal(200);
 		connectionManager.setDefaultMaxPerRoute(100);
 
-		RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(10000).setSocketTimeout(10000).setConnectionRequestTimeout(4000).build();
+		RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(10000).setSocketTimeout(10000).setConnectionRequestTimeout(11000).build();
         httpClient = HttpClients.custom()
 				.setKeepAliveStrategy(new ProxyConnectionKeepAliveStrategy())
 				.setDefaultRequestConfig(requestConfig)

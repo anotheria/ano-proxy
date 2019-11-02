@@ -5,6 +5,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.config.ConnectionConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -66,7 +67,7 @@ public class HttpHelper {
 	 * @throws IOException in case of a problem or the connection was aborted
 	 * @throws ClientProtocolException in case of an http protocol error
 	 */
-	public static HttpResponse getHttpResponse(String url, String userAgent) throws IOException {
+	public static CloseableHttpResponse getHttpResponse(String url, String userAgent) throws IOException {
 		HttpGet request = new HttpGet(url);
 		request.addHeader("user-agent", userAgent);
 
@@ -90,7 +91,7 @@ public class HttpHelper {
 	 * @throws IOException if an I/O error occurs
 	 * @see #isScOk(HttpResponse)
 	 */
-	public static byte[] getResponseContent(HttpResponse response) throws IOException {
+	public static byte[] getResponseContent(CloseableHttpResponse response) throws IOException {
 		final HttpEntity entity = response.getEntity();
 		if (entity != null) {
 			try {
@@ -108,17 +109,33 @@ public class HttpHelper {
 
 	public static HttpHelperResponse getResponse(String method, String url, String userAgent){
 		HttpHelperResponse ret = new HttpHelperResponse();
+		CloseableHttpResponse response;
+		try {
+			response = getHttpResponse(url, userAgent);
+		} catch (IOException e) {
+			ret.setSuccess(false);
+			ret.setErrorMessage(e.getMessage());
+			LOGGER.error("can't execute http request with method <{}> url <{}>, and userAgent <{}>", method, url, userAgent, e);
+			return ret;
+		}
 
 		try {
-			HttpResponse response = getHttpResponse(url, userAgent);
 			ret.setSuccess(true);
 			ret.setStatusCode(response.getStatusLine().getStatusCode());
-			if (isScOk(response))
-				ret.setData(getResponseContent(response));
+			byte[] data = getResponseContent(response);
+			if (isScOk(response)) {
+				ret.setData(data);
+			}
 		}catch(IOException e){
 			ret.setSuccess(false);
 			ret.setErrorMessage(e.getMessage());
-            LOGGER.error("can't execute http request with method <{}> url <{}>, and userAgent <{}>", method, url, userAgent, e);
+			LOGGER.error("can't getResponseContent(). method <{}> url <{}>, and userAgent <{}>", method, url, userAgent, e);
+		} finally {
+			try {
+				response.close();
+			} catch (IOException e) {
+				LOGGER.error("can't close response. method <{}> url <{}>, and userAgent <{}>", method, url, userAgent, e);
+			}
 		}
 
 		return ret;
